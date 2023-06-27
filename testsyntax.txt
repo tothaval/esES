@@ -1,0 +1,368 @@
+!Testsyntax
+?Math			<- Namensraum
+?Math.Geometry	<- Unternamensraum
+?!Builtin	<- Bibliothekimport
+?!Console	<- Bibliothekimport
+
+??? Konstruktor immer gleich, bisherige ideen für andere codeblöcke verwenden,
+eine bleibt konstruktor ???
+
+:Rechteck;
+	?Math	<- Namensraum
+	(+Console)	<- Quelle n, wenn weggelassen, müsste Console. vorangestellt werden
+	(+Builtin)	<- Quelle n+1, vllt. witzig, ggf. nützlich, builtin Klassen und Methoden weglassen zu können
+
+	:> <:	<- Konstruktor n leer
+
+	:>		<- Konstruktor n+1 mit Parametern und Ausführungsblock
+	{
+		_x(int) = 50
+		_y(int) = 50
+	}
+	.
+		x(int) = _x
+		y(int) = _y
+
+		area = (x*y){precision = e4}
+	.
+	<:
+
+	.area,
+		?Math.Geometry <- steht dem namensraum als lokale erweiterung zur verfügung
+		.>
+			> x*y
+		<.
+
+		.>
+			{_x(double),_y(double)}
+
+			.
+				> r=(x*y){precision = e5, :.set_area(r)}  <- Return und Parameterobjektfunktion nutzend
+															 wird zugleich der Wert an die Klasse ->
+			.
+		<.
+	,
+
+	.x_axis_length,
+		> x
+	,
+
+	.y_axis_length,
+		> y
+	,
+
+	.max_axis,
+
+		> x
+
+		=!{ y > x},
+			> y
+		,
+	,
+
+	.set_area{a(double)},
+		area = a
+	,
+
+	.set_x{_x(int)},
+		x = _x
+	,
+
+	.set_y{_y(int)},
+		y = _y
+	,
+
+;Rechteck:		<- explizite Nennung kann entfallen, Ende Klasse Rechteck
+
+	.
+		(Konsole) #use print 	<- Quelle n
+
+		print +Rechteck{25, 47}.x_axis_length +print.new_line{2} <- Parameter ohne Komma?
+
+		r1 = +Rechteck{55, 92}
+
+		print @"{r1.x_axis_length}\n\n"
+
+		print r1.area{95,22}
+
+		-Rechteck #all
+	.
+
+	.
+		(Konsole) #use * 	<- Quelle n
+
+		r3 = +Rechteck{read{"Neue Werte eingeben: ", x, y}}
+
+		print r3
+
+		-r3
+	.
+
+!
+
+<#
+
+	bzgl. Abfragen:
+		=! ist ein einzelnes If-Statement und fungiert als Else im Falle mehrerer Statements
+		=? ist bis zum nächsten != Teil einer zumsammengehörigen If-Else-Struktur
+
+	bzgl. Builtin:
+		pool{} bzw. *{} kann von Random, Enum und Array erben und entweder randomisierte,
+			enumerierte Listen oder Arrays erzeugen, Kombinationen von Random, Array und Enum sind möglich.
+
+			test_liste([]) = *(Builtin.Random){v1, v2, v3, v4}
+				<- bzw.
+					<- test_liste([]) = pool(Builtin.Random){v1, v2, v3, v4}
+
+			print {@"{test_liste} \n"
+			 +@"{type{v1}} \n"
+			 +@"{type{v2}} \n"
+			 +@"{type{v3}} \n"
+			 +@"{type{v4}} \n"
+			 +@"\n"
+			 +@"{type{test_liste[0]}} \n"
+			 +@"{type{test_liste[1]}} \n"
+			 +@"{type{test_liste[2]}} \n"
+			 +@"{type{test_liste[3]}} \n"
+			}
+
+			>>  v2, v3, v1, v4
+			>> type integer
+			>> type dictionary
+			>> type integer
+			>> type list
+			>>
+			>> type dictionary
+			>> type integer
+			>> type integer
+			>> type list
+			>>
+
+	bzgl. Instanzierung:
+		+KLASSENNAME <- neue Instanz
+		+{Singleton = yes}KLASSENNAME <- neue Instanz mit/gemäß Pattern, Instanziierungsoptionen nutzend
+		+{=!{< 20}}KLASSENNAME	<- muss intern zur Erzeugung einer Liste führen,
+								<- die mit der Menge an Objekten gefüllt ist, es wird eins von der Liste abgezogen
+								<- existiert bereits eine Liste, wird von dieser eins abgezogen
+								<- Konsequenz: Instanzfehler wenn alle oder egal, Hauptsache der Speicherbedarf ist
+								<- geregelt und gedeckelt.
+		-KLASSENNAME				<- aktuelle bzw. im Codeblock erzeugte Instanz einer Klasse entfernen
+		-KLASSENNAME.Methode		<- aktuelle bzw. im Codeblock erzeugte Instanz der Methode einer Klasse entfernen
+		# -§						<- Loop verlassen und Code nach Loop ausführen
+		-(){[4]}KLASSENNAME			<- falls vorhanden, 5. Instanz aus Instanzliste entfernen
+		-(){}KLASSENNAME.Methode	<- Methodenentfernung mit Quellen- und Parameterelementen von -
+		-(){all}KLASSENNAME
+		-(Console){all}KLASSENNAME,	<# ?? zwei Befehle draus machen oder Ausführungsblöcke anders trennen ?? #>
+			§{[], KLASSENNAME},
+				print @"{+System.Instances{KLASSENNAME}} deleted"
+			,
+		,
+		# -{all}!Programmname			<- alle Instanzen eines Programms entfernen/löschen
+
+	bzgl. Quellen:
+		Überlegungen:
+			(Bibliothek) oder (+Bibliothek), wenn üblich Instanzen mit +KLASSENNAME erzeugt werden,
+			wäre (+Bibliothek) gleichbedeutend mit neuer Instanz der Bibliothek, (Bibliothek) würde
+			instanzlos Methoden bereitstellen, erste erbende Instanz wäre !Programmname, ist das relevant? Kein Plan bisher.
+
+
+	bzgl. Parametern:
+		Überlegungen:
+			{}, jedes Objekt kann im Konstruktor mit {} Argumente übergeben bekommen, dies gilt ebenfalls für Codestrukturen wie
+			Programme, Klassen, Methoden
+
+			!Programmname
+			?Namensraum
+			?!Bibliothek
+			# run :Testklasse as main
+				!>{.name = Constructor_1},
+						*(*) 						<- nicht spezifiziert, beliebige Argumente werden übernommen, solange nichts abgegriffen wird,
+												<- werden diese mit der ersten GarbageCollection gelöscht
+				,<!
+
+				!>{.name = Constructor_2}, 			<- double multiplicator with unit
+						value1(int) 				<- CR wird wie Leerzeichen bzw. ~ gewertet, dass in [0] der nächsten Zeile gesetzt wird
+						value2(double)
+						value3(string)
+				,<!
+
+
+			:Testklasse;
+				(+Rechteck)
+				(Builtin)
+				# run .check
+					:>(!Constructor_2){.name = result},
+						multiplicator = value1 ~ value = value2 ~ unit = value3 		<- Zuweisung in einer Zeile
+
+						multiplicator = value1									<- Zuweisung zeilenweise
+						value = value2										<- Zuweisung zeilenweise
+						unit = value3 											<- Zuweisung zeilenweise
+					,<:
+
+				.out_unusable,
+					.>{.name = unusable }(!Constructor_1),
+
+						params = *
+					,<.
+
+					Builtin.Console.print "unused console parameters:\n"
+
+					loop{Builtin.Console.print @"{params} {Builtin.type{params}}"}
+
+					loop(Console~Builtin){print @"{params} {type{params}}"} 		<- geht nur, falls Builtin keine .print oder Console keine .type hat
+				,
+
+				.out_result,
+					.>(+result){.name = expected}, 			<- bei leerem Konstruktor(keine Instruktionen) können Kommas entfallen, ggf. sogar insgesamt
+					,<.
+
+
+					=?{Builtin.type{multiplicator} = Builtin.type.integer
+						& Builtin.type{value} = Builtin.type.double
+						},
+
+						result(double{precision = e4}) = multiplicator * value
+						Builtin.Console.print @"{multiplicator} * {value} = {result} {unit}"
+					,
+
+					=!(Builtin.Console),
+						print @"{:.TypeErrorList}\n{!.TypeErrorList}"
+					,
+				,
+
+				.check,
+					=?(async){ !Constructor_2 = null },
+						+out_rest
+							# async execute		<- letzte Zeile zuvor wird asynchron ausgeführt, compiler wartet solange
+
+						-out_rest
+					,
+
+					=!(async){ !Constructor_1 = null }, 	<- auch zulässig: !=, ... ,
+						+out_result
+							# async execute
+
+						-out_result
+					,
+
+				,check.		<- auch zulässig, kann entfallen bis auf ,
+
+			;Testklasse:Programmname!
+
+
+	bzgl. Schleifen:
+		Überlegungen:
+			loop{[1,22], x(Double{steps{0.02}})}, ... ,
+
+			<- oder
+
+			§{[1,22], i(Integer{steps{3}})}, ... , <- 1,4,7,10,13,16,19,22 = 8x
+
+			§(){!={yes}}, <- while Dauerschleife
+
+				# -§ <- alternativ geht auch break
+			,
+
+			§(Builtin){!={x<4}}, <- while mit Abbruchbedingung und Quellenimport
+
+				Console.print +System.Time(System.TimeFormat){fromSeconds, toMonths}
+
+				System.Time.Sleep(System.Time.Seconds){1}
+
+				x += 1
+			,
+
+			§{[start, end], variable(type){steps}}, ... , <- For-Schleife
+
+			§{[], loop_me_list}, ... , <- For-Schleife elementweise durchlaufen ohne Variable
+
+
+	bzgl. Symbolvariante:
+		<- falls es mal eine Variante mit ausschließlich Symbolen für alle Schlüsselworte geben sollte,
+		<- dann sollten diese Symbole dem Unicode entnommen sein, UTF-8 +, im Editor wäre es nice, wenn
+		<- in einer Schlüsselworttabpanelleiste whatever, mit Strg+Ziffer bzw. per Tastenkombination
+		<- das Schlüsselwort eingefügt werden würde
+
+
+
+
+			!Programmname
+			?Namensraum
+			?!Bibliothek
+			#run :Testklasse as main
+				!>{.name = Constructor_1},
+						*(*) 	<- nicht spezifiziert, beliebige Argumente werden übernommen, solange nichts abgegriffen wird,
+								<- werden diese mit der ersten GarbageCollection gelöscht
+				,<!
+
+				!>{.name = Constructor_2}, <- double multiplicator with unit{
+						value1(int) <- CR wird wie Leerzeichen bzw. ~ gewertet, dass in [0] der nächsten Zeile gesetzt wird
+						value2(double)
+						value3(string)
+				,<!
+
+
+			:Testklasse;
+				(+Rechteck)
+				(Builtin)
+				#run .check
+					:>(!Constructor_2){.name = result},
+						multiplicator = value1 ~ value = value2 ~ unit = value3 <- Zuweisung in einer Zeile
+
+						multiplicator = value1	<- Zuweisung zeilenweise
+						value = value2			<- Zuweisung zeilenweise
+						unit = value3 			<- Zuweisung zeilenweise
+					,<:
+
+				.out_unusable,
+					.>{.name = unusable}(!Constructor_1),
+
+						params = *
+
+					,<.
+
+					Builtin.Console.print "unused console parameters:\n"
+
+					loop{Builtin.Console.print @"{params} {Builtin.type{params} }" }
+
+					loop(Console~Builtin){print @"{params} {type{params}}"}  <- geht nur, falls Builtin keine .print oder Console keine .type hat
+				,
+
+				.out_result,
+					.>(+result){.name = expected}, <- bei leerem Konstruktor(keine Instruktionen) können Kommas entfallen, ggf. sogar insgesamt
+					,<.
+
+
+					=?{Builtin.type{multiplicator} = Builtin.type.integer
+						& Builtin.type{value} = Builtin.type.double
+						},
+
+						result(double{precision = e4}) = multiplicator * value
+						Builtin.Console.print @"{multiplicator} * {value} = {result} {unit}}"
+					,
+
+					=!(Builtin.Console),
+						print @"{:.TypeErrorList}\n{!.TypeErrorList}"
+					,
+				,
+
+				.check,
+					=?(async){ !Constructor_2 = null },
+						+out_rest
+							#async
+
+						-out_rest
+					,
+
+					=!(async){ !Constructor_1 = null }, 	<- auch zulässig: !=, ... ,
+						+out_result
+							#async
+
+						-out_result
+					,
+
+				,check.		<- auch zulässig, kann entfallen bis auf ,
+
+			;Testklasse:Programmname!
+
+
