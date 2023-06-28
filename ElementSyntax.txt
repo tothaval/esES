@@ -9,7 +9,7 @@ location: @home enjoying long days
 ES concept(0): 
 	- most needed syntax is to be replaced with symbols and signs
 	- eop is achieved via standardized elements (element object programming)
-	- instances can be added to or removed from an element instance to free up ram
+	- instances can be added to or removed from an element instance to free up ram &330 & &331
 	- ram usage calculation should be based on element instance count within ES
 	- rank and dynasty based approach for multiple inheritance of code sources
 	- target platforms: existing os infrastructure
@@ -97,7 +97,10 @@ Element ranks(1.1):
 			(5. server			µ	) optional expansion of abstraction towards higher abstracted complexity
 			(6.	system			%	) optional expansion of abstraction towards higher abstracted complexity
 			(7.	infrastructure	&	) optional expansion of abstraction towards higher abstracted complexity
-		>-
+		>-	positive Ränge: systematische Betrachtungsebene
+		>-	negative Ränge: physische Einbettungsebene
+		>-	f.e. RANK-17> ... <RANK-17, no clue what -17 represents in terms of physical realm
+		
 	- those are the ranks, in the future they could be expanded upwards to represent greater abstraction
 		levels and higher combined complexity of all subsequent elements not yet known as a concept by
 		name, as well as downwards to represent outside structures like an operating system, a network,
@@ -132,6 +135,7 @@ Element ranks(1.1):
 	- at first ES will only support negative ranks up to -2 and positive ranks up to rank 4
 
 Element modifiers(1.2):
+	>- MbDD modifier based dynasty detection
 	<- each element can have several modifiers
 	<- modifiers can be bound to specific dynasties writing ?Realm?!MOD, else the modifier will be applied
 		for all introduced dynastic elements
@@ -168,6 +172,8 @@ Element modifiers(1.2):
 	
 		<- ?!callable	<- other elements can call from outside familiy
 						<- and from all ranks, depending on rank modifiers
+						
+		<- ?!repeatable
 	
 	<- syntax bridge
 		<- ?!ES			<- can only access rank -1, only element priviliged to see executable elements,
@@ -179,6 +185,15 @@ Element modifiers(1.2):
 						<- bytecode for ES to store and execute it if necessary and possible due to modifiers,
 						<- as well es transmit errors, warnings and suggestions to ES for display
 						<- in an editor or IDE						
+						
+	<- currently unallocated:
+		<- ?!core		<- must remain within dynasty, can not be passed outside
+		<- ?!sigil 		<- requires key
+		<- ?!key 		<- unlocks sigil
+		<- ?!first
+		<- ?!bullet | bulletin
+	
+	
 						
 Dynastic elements(1.3):
 	- every element with the appropriate modifiers can be introduced to other elements with
@@ -222,10 +237,26 @@ Dynastic Overrides(1.6):
 	- to use code as blueprint, f.e. for abstract classes declare a non ancestor
 		with the modifier ?!idol and specify (**IDF) on the implementing element
 	- 
+
+Call of IDFs(1.7):
+
+		when to be run by an interpreter based version in a console,
+	use #, to signal the interpreter that all linked lines up to this line,
+		and the line as well should be executed by ES, in my experience, python
+		tends to be slow when used in a console with its interpreter function under linux f.e.,
+		to wait for a execution run point maybe could fix this sluggishness in speed.	
 	
+	# ^ signals async operations, es will halt execution until called
+		IDF has finished process
+		
+	for to be compiled source files it is enough if the IDF including
+		the rank is called, it would certainly be worhty to become a
+		pep8 like recommendation: # RANKIDF or # ^ RANKIDF or # +RANKIDF # -RANKIDF
+	
+	f.e.s: # !Program # !Program.Sender #!Program;CreateNewsReport
+
 	
 Syntax(2):
-
 Syntax keys(2.1):
 	 0. RANK>  	<- 	opening constructor
 	 
@@ -293,91 +324,144 @@ Syntax keys(2.1):
 
 	19. ^{int, (numbers)}  		<- exponential operation (allowed within trade elements block)
 	
-	20. ~ , [space] 			<- element separators
+	20. ~ [space] 				<- element separators
 	
-	21. *  						<- perform inheritance (allowed within dynastic elements block),
+	21. *  						<- perform inheritance (allowed within dynastic elements block)
 								<- will add inheritance source to dynasty
-
-	22. yes no  	  			<- decisions (allowed within traded elements block or right of an =)
+								
+	22. +						<- birth operator, creates an instance
+		-						<- grave operator, deletes an instance
+								
+	23. yes no  	  			<- decisions (allowed within traded elements block or right of an =)
 	
-	23. + - * / < >				<- operators (allowed within traded elements block or as part of an
+	24. + - * / < >				<- operators (allowed within traded elements block or as part of an
 								<- expression starting after the es return key)
-	
-	24. .. . ; : ! µ % & ° = 	<- rank keys
+
+	25. .. . ; : ! µ % & ° = 	<- rank keys
 		
-	25  ?!						<- modifier
+	26  ?!						<- modifier
     
-	26	& |						<- conditions (allowed within traded elements block)
+	27	& |						<- conditions (allowed within traded elements block)
 	
-	27 	??						<- realm within ES where the highest rank within the file and 
+	28 	&*NUMBER 				<- line connection for explanations or hints within the document,	
+		NUMBER*&				<- i don't know yet, if hypertext links within a source code file exist
+								<- i need to scroll very often, line jump hints may help to reduce that
+								<- amount of time
+								
+	28 	??						<- realm within ES where the highest rank within the file and 
 									the dynasty will be known to every constituent element
 	
-	28	?						<- introduce dynastic element to file, let the compiler search the realms
+	30	?						<- Library, &351
+								<- &350 introduce dynastic element to file &351
+								<- &351 let the compiler search the realms 
 	
-	29 	@						<- TRE blocks can be inserted into the string
+	31 	@						<- TRE blocks can be inserted into the string
 
-	30 	"						<- string encapsulator
+	32  "						<- string encapsulator
 	
-	31 	=						<- assign right to left, optional, values can also be passed via TRE
+	33 	=						<- assign right to left, optional, values can also be passed via TRE
+	
+	34 ,MOD						<- a moment, not yet sure what to do with it, MOD = moment description IDF
+								<- STORE DATA, idky
 	
 		
-	- some examples:
-	
-!helloWorld(Console)(Calculator)			<- dynasty helloWorld, rank program, reads from Console and Calculator
-?BasicCalculations							<- realm of BasicCalculations
-
-	.(Console){"Hello World"} print{.text}. <- the structure reads from Console which has a print
-											<- function, the string traded to the structure is
-											<- assigned to the internal text member of the structure,
-											<- print is then called and calls the structures 
-											<- text member to print it to the console
-											
-	+newCalculator{Calculator{15, 22}}		<- +ELEMENT constructor will be read and executed
-	newCalculator;run	
-
-?!executable								<- modifier tells ES that this program can be run
-!
-
-
-!Calculator
-?BasicCalculations							<- realm within ES, !Calculator dynasty will be known within
-??Console									<- introduced to !Calculator, originating from ??ES?BUILTIN
-
-!> operand_left(int), operand_right(int) <! <- program constructor 0, taking two integer parameters
-
-	:Square(<*)								<- class definition with inheritance instruction
-	
-		;get_area							<- method definition without DYE and TRE blocks
-			> operand_left * operand_right	<- return multiplication result
-		
-			.get_diagonal					<- structure definition within method rank
-				> :;calculate_diagonal		<- return class member method ;calculate_diagonal
-			?!								<- modifier empty, meaning higher rank reigns
-			.								<- end of structure .get_diagonal
-		?!
-		;									<- end of method ;get_area
-	
-		;calculate_diagonal(<*)				<- method definition with inheritance instruction
-			> ^{2~operand_left} + ^{2,operand_right}	<- return addition of 2nd exponents of the operands
-		?!loyal								
-		;
-
-	
-	?!loyal				<- modifier loyal, element will only answer calls of higher ranked dynastic members
-	:Square				<- end of class Square with optional ending identifier
-
-	;run(+Console)		<- program level method, taking two arguments as parameters and instantiating Console
-		# print{@"d = {!:Square.get_diagonal}\n" +	<- string with TRE blocks concatenated over two lines
-			@"a={!:Square;get_area}" 					<- string with TRE blocks concatenated over two lines
-		}
-		
-	?!callable
-	;
-
-?!callable
-!
-
-
+					- some examples:
+					
+				!helloWorld(Console)(Calculator)				
+					<- dynasty helloWorld, rank program, reads from Console and Calculator
+					
+				?BasicCalculations								
+					<- realm of BasicCalculations
+					
+					.(Console){"Hello World"} print{.text}. 	
+						<#  the structure reads from Console which has a print
+							function, the string traded to the structure is
+							assigned to the internal text member of the structure,
+							print is then called and calls the structures 
+							text member to print it to the console
+						#>
+																
+					+newCalculator{Calculator{15, 22}}			
+						<- +ELEMENT constructor will be read and executed
+						
+					newCalculator;run		
+					
+				?!executable									
+					<- modifier tells ES that this program can be run
+					
+				!	
+					
+					
+				!Calculator	
+				?BasicCalculations								
+					<- realm within ES, !Calculator dynasty will be known within
+				??Console										
+					<- introduced to !Calculator, originating from ??ES?BUILTIN
+					
+				!> operand_left(int), operand_right(int) <! 	
+					<- program constructor 0, taking two integer parameters
+					
+					:Square(<*)									
+						<- class definition with inheritance instruction
+						
+						;get_area								
+							<- method definition without DYE and TRE blocks
+							
+							> operand_left * operand_right		
+								<- return multiplication result
+							
+							.get_diagonal						
+								<- structure definition within method rank
+								
+								> :;calculate_diagonal			
+									<- return class member method ;calculate_diagonal
+									
+							?!									
+								<- modifier empty, meaning higher rank reigns
+								
+							.									
+								<- end of structure .get_diagonal
+								
+						?!	
+						
+						;										
+							<- end of method ;get_area
+						
+						;calculate_diagonal(<*)
+							<- method definition with inheritance instruction
+							
+							> ^{2~operand_left} + ^{2,operand_right}
+								<- return addition of 2nd exponents of the operands
+								
+						?!loyal	
+						
+						;
+									
+					?!loyal
+						<- modifier loyal, element will only answer calls of higher ranked dynastic members
+					
+					:Square
+						<- end of class Square with optional ending identifier
+				
+					;run(+Console)
+						<- program level method, taking two arguments as parameters and instantiating Console
+						
+						# print{
+							@"d = {!:Square.get_diagonal}\n" +
+								<- string with TRE blocks concatenated over two lines
+								
+							@"a={!:Square;get_area}"
+								<- string with TRE blocks concatenated over two lines
+								
+						}
+						
+					?!callable
+					
+					;
+				
+				?!callable
+				
+				!				
 
 ES es (3):
 
@@ -385,3 +469,34 @@ ES(3.1):
 - ES;find_rank~ES;find_dynasty
 
 es(3.2):
+- rank request
+
+Storage Management Key(3.3):
+
+	,IDF(DYNASTY){DEST~NAME~FORMAT} FUNCTIONCALL,
+
+	,IDF(){}, ;save | ;load | ;create | ;delete &| ..isFolder = yes | no )
+	
+	bsp:	
+		,saveValues(OS_UserTable){
+			"c:/programs/ES_Editor"
+			IDF..name
+			txt				|| automatisch wenn Format gibt, isFolder intern auf no setzen?
+			isFolder = no			
+			}
+			
+			r = ;RequestRights{currentUser}
+			
+			=!{find{r, ..path}}. ;save  .
+			
+		,
+
+		,loadValues(IO_Handler){}
+			
+			<{=?{IO_Handler:USB;Biggest}. .~=!{"c:/programs/ES_Editor"}. .}
+			
+			> ..values			
+		,
+			
+	
+	
