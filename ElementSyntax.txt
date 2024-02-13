@@ -64,6 +64,8 @@ Element definition(1):
 		-< 
 			 0. rank (es)(element){ < ES.RANKNAME }
 			 1. identifier (ES)(element){ < ES.IdRequest} <- IDF, once received, storage creation is initialized
+			 7. modifiers 							<- MOD, optional either here or at the end, shouldn't matter when both places carry
+											a mod, unless they are different.
 			 2. element storage(						<- not part of the declaration, created upon element definition
 			 	2.0 name(string){"element"}				<- string
 			 	2.1 x (smallint){0}						<- char/smallint
@@ -464,6 +466,8 @@ Syntax keys(2.1):
 				!				
 
 ES es (3):
+	should contain a statistic function for every order/rank of elements, so that
+	the regular memory usage can be determined over time.
 
 ES(3.1):
 - ES;find_rank~ES;find_dynasty
