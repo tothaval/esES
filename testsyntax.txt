@@ -23,7 +23,7 @@ eine bleibt konstruktor ???
 		x(int) = _x
 		y(int) = _y
 
-		area = (x*y){precision = e4}
+		area = (x*y){precision = e4} <- optional element storage addition with auto typing via = ?
 	.
 	<:
 
@@ -53,7 +53,7 @@ eine bleibt konstruktor ???
 
 	.max_axis,
 
-		> x
+		> x                         <- depeding on if an element is read completely or line by line, this should be written after the =! statement
 
 		=!{ y > x},
 			> y
@@ -107,10 +107,10 @@ eine bleibt konstruktor ???
 		=? ist bis zum nächsten != Teil einer zumsammengehörigen If-Else-Struktur
 
 	bzgl. Builtin:
-		pool{} bzw. *{} kann von Random, Enum und Array erben und entweder randomisierte,
+		pool{} bzw. ${} kann von Random, Enum und Array erben und entweder randomisierte,
 			enumerierte Listen oder Arrays erzeugen, Kombinationen von Random, Array und Enum sind möglich.
 
-			test_liste([]) = *(Builtin.Random){v1, v2, v3, v4}
+			test_liste([]) = $(Builtin.Random){v1, v2, v3, v4}
 				<- bzw.
 					<- test_liste([]) = pool(Builtin.Random){v1, v2, v3, v4}
 
