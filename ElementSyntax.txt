@@ -3,479 +3,705 @@ by Stephan Kammel
 date and time: 
 	+ 2023|06|19 - 2023|06|20  (0)~(1)~(1.1)~(1.2)
 	+ 2023|06|21  (1.3)~(1.4)~(1.5)~(2.1)
+	+ 2024|02|19  (updating and refactoring this document, with
+				   the exception of the larger code example in item 2.1)
 
 location: @home enjoying long days
 
-ES concept(0): 
-	- most needed syntax is to be replaced with symbols and signs
-	- eop is achieved via standardized elements (element object programming)
-	- instances can be added to or removed from an element instance to free up ram &330 & &331
-	- ram usage calculation should be based on element instance count within ES
-	- rank and dynasty based approach for multiple inheritance of code sources
-	- target platforms: existing os infrastructure
-	
-Element definition(1):
-	- an element is constructed from es keys and inbuilt functions
-	- each element is private to all ranks except ES, until specified otherwise
-	- each element has the exact same design
-	- each element is part of a source code dynasty and has a rank, a dynasty is an inheritance chain
-	- rank and dynasty interactions of elements can be modified via modifiers
-	- each element has a name, default "element"
-	- each element has a unique id, incrementally descending per program rank to
-		lesser ranks within the dynasty, not setable, but accessible by the programmers, dependend
-		on time of creation of the element instance, an incremented integer value will be returned by ES,
-		the dynasty root instance must be informed on dynastic activities and must assign the id to an
-		requesting element, as well as store or update stored information on dynasty exchange, elements
-		need to be stored in "values" list of root element, as well as the value list reference and the
-		id where the objects at in the "references" dictionary of the requesting element
-	- each element carries 3 internal integer values, smallest datatype possible as long as unset,
-		later it must be resized and inform ES about the size change, in case f.e. an integer 
-		expands beyound 32k, the next biggest data type must be used instead or an additional member must
-		be added by ES to the element, and ES must be informed or already knows it, that more space is
-		needed in storage, it should request the needed space from the os accordingly or it needs to manage
-		it for the element, f.e. assigning a second basetype and fill it until it is full and so on, default
-		for the three values is 0, they are for potential future stuff, where spatial storage
-		or 3 dimensional orientation or text might be a thing or the element would represent
-		f.e. an 3d object like a cube, representing pixels or color values or whatever triple stuff
-	- each element carries an empty string, default ""
-	- each element carries a "values" list, default empty, for values like names, data, etc., a dynastic root
-		will have to declare an additional member of type list if needed, because the internal value list is
-		reserved for dynastic data management
-	- each element carries a "references" dictionary, default empty, whenever an element is
-		added to a list, a reference to the list and the indexvalue are stored in the dictionary,
-		as well on every change, so that each element knows everytime where it is stored at,
-		it has to neglect reference storage if the target element and place are not transmittable by the caller,
-		first entry will have to be ES, second the dynastic root after the elements creation
-	- each element with the appropriate modifiers can traverse ranks and dynasties and be attributed
-		to other elements as an instance attribute, f.e. a class with the modifier ?!last & ?!fame
-		could start on program level and be passed as a parameter to end up in another rank and dynasty,
-		but other elements could never inherit from it, with the modifier ?!theone the code could not be
-		executed within the namespace realm of ES if ?!theone has one instance already active in the ES
-		internal namespace instance element tree
-	- ES &| es should allow for configuration of maximum element storage size, above, an element buffer error
-		must be raised and the running application terminated or at least the executed code must be halted
-		to contain stack overflows within a calculatable amount
-	- there are no base types, base types are !?silent modified elements accessible only from es rank (-1),
-		but they may be introduced via dynastic elements to every element
-	- member elements will overwrite the !?silent modifier upon element declaration, if needed respecify !?silent
-		at the end of the element
 
-	- each element is built as follows:
-		-< 
-			 0. rank (es)(element){ < ES.RANKNAME }
-			 1. identifier (ES)(element){ < ES.IdRequest} <- IDF, once received, storage creation is initialized
-			 7. modifiers 							<- MOD, optional either here or at the end, shouldn't matter when both places carry
-											a mod, unless they are different.
-			 2. element storage(						<- not part of the declaration, created upon element definition
-			 	2.0 name(string){"element"}				<- string
-			 	2.1 x (smallint){0}						<- char/smallint
-			 	2.2 y (smallint){0}						<- char/smallint
-			 	2.3 z (smallint){0}						<- char/smallint
-				2.4 text (string){""}					<- string
-			 	2.5 values								<- empty list element
-			 	2.6 references							<- empty dictionary element
-				2.7 optional additions					<- one instance must already exist, via ES or special builtin function 
-			 3. dynastic elements						<- DYE
-			 4. trade elements							<- TRE
-			 5. constructor elements 					<- COE members, methods, parameters
-			 6. lesser rank elements of element			<- LREOE members, methods, functional logic
-			 7. modifiers								<- MOD
-			 8. adress (ES)(bytearray){ < ES.AdressRequest} <- only visible to negative ranks
-			 9. rank
-			10. optional identifier again		
-		>-
+
+0.
+	ES concept: 
+	- most needed syntax is to be replaced with symbols and signs
+	  (see item 'Syntax Keys' 2.1)
+	- EOP(element object programming) is achieved via standardized element objects
+	  (see item 'Element definition' 1)
+	- instances can be added to or removed from an element instance to free up ram,
+	  using birht and grave operators ('Syntax Keys' 2.1.22)
+	- ram usage calculation should be based on element instance count within ES,
+	  using maximum element storage configuration via ES
+	- rank and dynasty based approach for multiple inheritance of code sources
+	  (see items 'element ranks' 1.1, 'element modifiers' 1.2, 'dynastic elements' 1.3 
+	- target platforms: existing os infrastructure, embedded systems
+	
+	
+	
+1.
+	Element definition(1):
+	general definition:
+	- an element is constructed from es keys and inbuilt functions
+	- each element is private to all ranks except ES, until specified
+	  otherwise via modifiers
+	- each element is part of a source code dynasty and has a rank,
+	  a dynasty is an inheritance chain
+	- each element has the exact same design, every code structure has
+	  a certain rank, elements can be expanded adding members, functions
+	  and, in general, with every lower ranked type of element
+	- rank and dynasty interactions of elements can be modified via modifiers
+	
+	specified definition:
+	- each element has a name, default "element"
+	- each element has a unique id, incrementally descending per rank to
+	  lesser ranks within the dynasty, not setable, but accessible by the
+	  programmers,
+	  dependend on time of creation of the element instance, an incremented
+	  integer value will be returned by ES, the dynasty root instance must be
+	  informed on dynastic activities and must assign the id to an requesting
+	  element, as well as store or update stored information on dynasty exchange,
+	  elements need to be stored in "values" list of root element, as well as the
+	  value list reference and the id where the objects at in the "references"
+	  dictionary of the requesting element
+	- each element carries 3 internal integer values, smallest datatype possible
+	  as long as unset, later it must be resized and inform ES about the size change,
+	  in case f.e. an integer expands beyound 32k, the next biggest data type must be
+	  used instead or an additional member must be added by ES to the element, and ES
+	  must be informed or already knows it, that more space is needed in storage, it
+	  should request the needed space from the os accordingly or it needs to manage it
+	  for the element, f.e. assigning a second basetype and fill it until it is full
+	  and so on, default for the three values is 0, they are for potential future stuff,
+	  where spatial storage or 3 dimensional orientation or text might be a thing or the
+	  element would represent f.e. an 3d object like a cube, representing pixels or color
+	  values or whatever triple stuff
+	- each element carries an empty string, default ""
+	- each element carries a "values" list, default empty, for values like names, data, etc.,
+	  a dynastic root will have to declare an additional member of type list if needed,
+	  because the internal value list is reserved for dynastic data management
+	- each element carries a "references" dictionary, default empty, whenever an element
+	  is added to a list, a reference to the list and the indexvalue are stored in the
+	  dictionary, as well on every change, so that each element knows everytime where it
+	  is stored at, it has to neglect reference storage if the target element and place are
+	  not transmittable by the caller, first entry will have to be ES, second the dynastic
+	  root after the elements creation
+	- each element with the appropriate modifiers can traverse ranks and dynasties and be
+	  attributed to other, higher ranked elements as an instance attribute, f.e. a class with
+	  the modifier ?!last & ?!fame could start on program level and be passed as a parameter
+	  to end up in another rank and dynasty(f.e. in a program or server rank element, but
+	  other elements could never inherit from it, with the modifier ?!theone the code could
+	  not be executed within the namespace realm of ES if ?!theone has one instance already
+	  active in the ES internal namespace instance element tree
+	- lower ranked elements can call and instantiate higher ranked elements, as long as the 
+	  modifiers allow it, but they can not inherit a higher ranked element into their structure
+	- ES &| es should allow for configuration of maximum element storage size, above, an element
+	  buffer error must be raised and the running application terminated or at least the executed
+	  code must be halted to contain stack overflows within a calculatable amount
+	- there are no base types, base types are !?silent modified elements accessible only from
+	  es rank (-1), but they may be introduced via dynastic elements to every element
+	- member elements will overwrite the !?silent modifier upon element declaration, if needed
+	  respecify !?silent as modifier for the element in question
+	- each element is built in the following way:
+		0. rank (es)(element){ < ES.RANKNAME }			<- see item 'element ranks' 1.1
+		1. identifier (ES)(element){ < ES.IdRequest} 	<- IDF, once received, storage creation is initialized
+		2. modifiers 					<- MOD, optional either here or at the end, position 9,
+								   shouldn't matter when both places carry mods, unless
+								   they cancel each other out, see item 'element modifiers' 1.2
+		3. element storage				<- not part of the declaration, created upon definition
+			2.0 name(string){"element"}		<- string
+			2.1 x (smallint){0}			<- char/smallint
+			2.2 y (smallint){0}			<- char/smallint
+			2.3 z (smallint){0}			<- char/smallint
+			2.4 text (string){""}			<- string
+			2.5 values				<- empty list element
+			2.6 references				<- empty dictionary element
+			2.7 optional additions			<- one instance of the element must already exist,
+								   via ES or special builtin function, 
+		4. dynastic elements				<- DYE, see item 'dynastic elements' 1.3
+		5. trade elements				<- TRE, see item 'traded elements' 1.4
+		6. constructor elements 			<- COE, see item 'constructor elements' 1.5
+		7. lesser rank elements of element		<- LREOE, members, methods, functional logic of lower rank
+		8. adress (ES)(bytearray){ < ES.AdressRequest} 	<- only visible to negative ranks
+		9. optional place for modifiers			<- MOD, see item 'element modifiers' 1.2
+		10. rank
+		11. optional place for second identifier
+
+
 	
 Element ranks(1.1):	
-		-<
-			-2.	ES virtual machine, runtime environment, 		<- invisible rank
-				dont know yet, the program of ES that			
-				monitors compiler activity and ES program execution
-			-1.	es the compiler, can only be executed by ES		<- invisible rank	
-			0.	member			..	lowest rank
-			1.	structure		.	can be used like a lambda function, but also with an identifier
-			2. 	method			;
-			3.	class			:
-			4.	program			!	if highest rank it is the dynastic root of the dynasty connected by the realm files
-			(5. server			µ	) optional expansion of abstraction towards higher abstracted complexity
-			(6.	system			%	) optional expansion of abstraction towards higher abstracted complexity
-			(7.	infrastructure	&	) optional expansion of abstraction towards higher abstracted complexity
-		>-	positive Ränge: systematische Betrachtungsebene
-		>-	negative Ränge: physische Einbettungsebene
-		>-	f.e. RANK-17> ... <RANK-17, no clue what -17 represents in terms of physical realm
+	outer ranks: 
+		code environment or surrounding machinery, invisible to inner ranks,
+		physical Layer
+				
+		(-5 higher surrounding system encapsulating the targeted functionality)
+		-4  network unit connecting rank -3 to other systems
+		-3	virtual machine or operating system running/executing ES
+		-2.	ES virtual machine, runtime environment, the program of
+			ES that monitors compiler activity and ES program execution,
+			as well as communication with surrounding environment
+		-1.	es the compiler, can only be executed by ES
 		
-	- those are the ranks, in the future they could be expanded upwards to represent greater abstraction
-		levels and higher combined complexity of all subsequent elements not yet known as a concept by
-		name, as well as downwards to represent outside structures like an operating system, a network,
-		a city or beyond, starting at -3
-	- lower ranks can be attributed to higher ranks, but not vice versa, holds true for negative ranks as well
-	- each element with a positive rank is written as follows in an es source code file:
-		-<	
-			0.	member			
-				..IDF(DYE){TRE} ..>COE<.. LREOE ?!MOD..IDF				<- encapsulated within LREOE or COE or TRE of higher rank
-			1.	structure			 
-				.IDF(DYE){TRE}	.>COE<.	LREOE	?!MOD.IDF				<- encapsulated within LREOE or COE or TRE of higher rank
-			2.	method			        
-				;IDF(DYE){TRE}	;>COE<;	LREOE	?!MOD;IDF				<- encapsulated within LREOE of higher rank
-			3.	class			        
-				:IDF(DYE){TRE}	:>COE<:	LREOE	?!MOD:IDF				<- encapsulated within LREOE of higher rank
-			4.	program			        
-				!IDF(DYE){TRE}	!>COE<!	LREOE	?!MOD!IDF				<- encapsulated within LREOE of higher rank
-			(5.	server			        
-				µIDF(DYE){TRE}	µ>COE<µ	LREOE	?!MODµIDF)				<- encapsulated within LREOE of higher rank
-			(6.	system			        
-				%IDF(DYE){TRE}	%>COE<%	LREOE	?!MOD%IDF)				<- encapsulated within LREOE of higher rank
-			(7.	infrastructure 	        
-				&IDF(DYE){TRE}	&>COE<&	LREOE	?!MOD&IDF)				<- encapsulated within LREOE of higher rank
-			(8.	realm of technology / a science of afuture time
-				°IDF(DYE){TRE}	°>COE<°	LREOE	?!MOD°IDF)				<- encapsulated within LREOE of higher rank
-			(9.	knowledge nexus / the totality of sciences
-				=IDF(DYE){TRE}	=>COE<=	LREOE	?!MOD=IDF)
-			((10. deus machina, superintelligent ai
-				=IDF(DYE){TRE}	=>COE<=	LREOE	?!MOD=IDF))
-		>-
+	inner ranks:
+		code structure and functional logic that is required for software solutions
+	+programming layer
+	+
+		+0. element				everything is an element within an environment
+		+1. member			..	lowest inner rank, can be attributed to inner ranks
+		+2. structure			.	can be used like a lambda function
+		+3. method			;
+		+4. class			:
+		+5. program			!	if highest rank it is the dynastic root of the
+							dynasty connected by the realm files
+		+6. server			µ	optional expansion of abstraction towards higher
+							abstracted complexity
+		+7. system			%	optional expansion of abstraction towards higher
+							abstracted complexity
+		+8. infrastructure		&	optional expansion of abstraction towards higher
+							abstracted complexity
+		
+	- those are the ranks, in the future they could be expanded upwards to represent
+	  greater abstraction levels and higher combined complexity of all subsequent
+	  elements not yet known as a concept by name, as well as downwards to represent
+	  outside structures like an operating system, a network, a city or beyond,
+	  starting at -3
+	- lower ranks can be attributed to higher ranks, but not vice versa, inner ranks
+	  can not be attributed to outer ranks
+	- each element with an inner rank is written in the following way:
+
+		1.	member, encapsulated within LREOE or COE or TRE of higher rank
+			..IDF ?!MODs (DYE){TRE} ..>COE<.. LREOE ?!MODs ..IDF
+		
+		2.	structure, encapsulated within LREOE or COE or TRE of higher rank
+			 .IDF ?!MODs (DYE){TRE}	 .>COE<.  LREOE	?!MODs  .IDF
 			
-	- at first ES will only support negative ranks up to -2 and positive ranks up to rank 4
+		3.	method,  encapsulated within LREOE of higher ran
+			;IDF ?!MODs (DYE){TRE}	 ;>COE<;  LREOE	?!MODs  ;IDF
+
+		4.	class,  encapsulated within LREOE of higher rank
+			:IDF ?!MODs (DYE){TRE}	 :>COE<:  LREOE	?!MODs  :IDF
+
+		5.	program,  encapsulated within LREOE of higher rank
+			!IDF ?!MODs (DYE){TRE}	 !>COE<!  LREOE	?!MODs  !IDF
+			
+		6.	server,  encapsulated within LREOE of higher rank if existing
+			µIDF ?!MODs (DYE){TRE}	 µ>COE<µ  LREOE	?!MODs  µIDF			
+		
+		7.	system,  encapsulated within LREOE of higher rank if existing
+			%IDF ?!MODs (DYE){TRE}	 %>COE<%  LREOE	?!MODs  %IDF			
+		
+		8.	infrastructure,  encapsulated within LREOE of higher rank if existing
+			&IDF ?!MODs (DYE){TRE}	 &>COE<&  LREOE	?!MODs  &IDF
+		
+		9.	realm of technology / a science of afuture time,
+			encapsulated within LREOE of higher rank if existing
+			°IDF ?!MODs (DYE){TRE}	 °>COE<°  LREOE	?!MODs  °IDF
+		
+		10.	knowledge nexus / the totality of sciences,
+			encapsulated within LREOE of higher rank if existing
+			=IDF ?!MODs (DYE){TRE}	 =>COE<=  LREOE	?!MODs  =IDF
+		
+		11. deus machina, superintelligent ai,
+			encapsulated within LREOE of higher rank if existing
+			==IDF ?!MODs (DYE){TRE}	==>COE<== LREOE	?!MODs ==IDF
+			??? no clue for an appropriate symbol, due to limited nowadays keyboard
+			
+	- at first ES will only support negative ranks up to -2 and positive ranks up to rank 5 or 8
+
+
 
 Element modifiers(1.2):
-	>- MbDD modifier based dynasty detection
-	<- each element can have several modifiers
-	<- modifiers can be bound to specific dynasties writing ?Realm?!MOD, else the modifier will be applied
-		for all introduced dynastic elements
+	- MBDD modifier based dynasty detection
+	- each element can have several modifiers, unless they cancel each other out, than an
+	  MOD conflict error must be raised during compilation or interpretation	  
+	- modifiers can be bound to specific dynasties writing ?Realm?!MOD, otherwise the mod
+	  will be applied for all introduced dynastic elements
 
-	<- hierarchy visibility
-		<- ?!unknown 	<- invisible to higher ranks within ES, access managed by ES or es
-						<- lower ranks must be of the same rank descendant within ES to see
+	hierarchy visibility
+		?!unknown 		<- invisible to higher ranks within ES, access managed by ES or es
+						<- lower ranks must be of the same rank descendant within ES to see	
+		?!fame			<- visible to all ranks within ES regardless of family	
+		?!known	 		<- visible to higher ranks of the same family within ES		
+		?!spy			<- like ?!known, with the addition of invisibility towards lower ranks
 	
-		<- ?!fame		<- visible to all ranks within ES regardless of family
-	
-		<- ?!known	 	<- visible to higher ranks of the same family within ES
-		
-		<- ?!spy		<- like ?!known, with the addition of invisibility towards lower ranks
-	
-	<- dynastic behaviour
-		<- ?!only 		<- only one active element within the entirety of ES
-		<- ?!theone 	<- only one active element within an ES namespace
-		<- ?!neglect	<- won't inherit dynastic elements unless told so, configurate es to 
-							allow elements to inherit from ElementSyntax, the base dynasty,
-							see testelement.py, an exemplary element definition written in python
-		<- ?!last		<- other elements can not inherit from
-		<- ?!idol		<- applies upon Dynasty Side Lines, forces inheritants to use overwrite
-	
-	<- basic statements
-		<- ?!	 		<- higher rank reigns
-	
-		<- ?!delegate	<- lower rank reigns
-	
-		<- ?!loyal		<- won't answer calls unless from higher ranked dynastic element
+	dynastic behaviour
+		?!first			<- dynasty starter
+		?!only 			<- only one active element within the entirety of ES
+		?!theone 		<- only one active element within an ES namespace
+		?!neglect		<- won't inherit dynastic elements unless told so, configurate es to 
+						<- allow elements to inherit from ElementSyntax, the base dynasty,
+						<- see testelement.py, an exemplary element definition written in python
+		?!last			<- other elements can not inherit from
+		?!idol			<- applies upon Dynasty Side Lines, forces inheritants to use overwrite
 
-		<- ?!silent		<- won't answer calls unless from es
-	
-		<- ?!executable <- can be run by ES
-	
-		<- ?!callable	<- other elements can call from outside familiy
-						<- and from all ranks, depending on rank modifiers
-						
-		<- ?!repeatable
-	
-	<- syntax bridge
-		<- ?!ES			<- can only access rank -1, only element priviliged to see executable elements,
-						<- communicates with higher negative ranks, f.e. the surrounding VM or OS
-		
-		<- ?!es			<- serves as an ambassador between ES and positive ranked realms and dynasties,
+	basic statements
+		?!	 			<- higher rank reigns	
+		?!delegate		<- lower rank reigns	
+		?!loyal			<- won't answer calls unless from higher ranked dynastic element
+		?!silent		<- won't answer calls unless from es	
+		?!executable 		<- can be run by ES, depending on os or network authorization
+		?!callable		<- other elements can call from outside familiy
+						<- and from all ranks, depending on rank modifiers						
+		?!repeatable	 	<- no clue if necessary, probably better if put under syntax bridge
+						<- or security regulations
+
+	syntax bridge
+		?!ES			<- can only access rank -1, only element priviliged to see executable elements,
+						<- communicates with higher negative ranks, f.e. the surrounding VM or OS		
+		?!es			<- serves as an ambassador between ES and positive ranked realms and dynasties,
 						<- since it is the compiler level, it can see and access all files and folders
 						<- within ES search paths, can only be executed by ES, will generate compiled
-						<- bytecode for ES to store and execute it if necessary and possible due to modifiers,
-						<- as well es transmit errors, warnings and suggestions to ES for display
-						<- in an editor or IDE						
-						
-	<- currently unallocated:
-		<- ?!core		<- must remain within dynasty, can not be passed outside
-		<- ?!sigil 		<- requires key
-		<- ?!key 		<- unlocks sigil
-		<- ?!first
-		<- ?!bullet | bulletin
-	
-	
-						
+						<- bytecode or chains of processor instructions depending on technical
+						<- implementation of es for ES to store and execute it if necessary and possible
+						<- due to modifiers and|or system authorization
+						<- errors, warnings and suggestions must be transmitted to ES for display in an
+						<- editor or IDE
+		?!bullet		<- no clue, probably something to interupt anything
+		?!ignore		<- if another IDF is identical to this elements IDF, ignore this one
+
+	security regulations
+		?!core			<- must remain within dynasty, can not be passed outside
+		?!sigil 		<- requires key
+		?!key 			<- unlocks sigil
+
+
+
 Dynastic elements(1.3):
 	- every element with the appropriate modifiers can be introduced to other elements with
-		the appropriate modifiers and dynastic properties via DYE blocks
+	  the appropriate modifiers and dynastic properties via DYE blocks	
 	- there are three approaches:
 		(IDF) 	use as library, ignore the constructor(s)
 		(+IDF)  create instance, read the constructor(s)
 		(*IDF)	inherit from, read everything and add inherited elements to the target element
 		(**IDF) inherit from and overwrite all
-	- an element can hold a maximum amount of DYE, which is n
-	- (IDF) and (+IDF) are called Dynasty Side Line, they do not add to the dynasty
-	- (*IDF) becomes a code ancestor and will be added to the dynasty
-	- (**IDF) designates the code source as an abstract source
+	- an element can hold a maximum amount of DYE, which is n, configurable via ES
+	- (IDF) and (+IDF) are called Dynasty Side Line (DSL), they do not add to the dynasty and can be
+	  introduced to lower ranks, even if they have a higher rank
+	- (*IDF) becomes a code ancestor and will be added to the dynasty, must be of higher or same rank
+	- (**IDF) designates the code source as an abstract source, must be of higher or same rank
+	- first dynastic root will be the first DYE block that is not a DSL, second dynastic root will
+	  be the second DYE block which is not a DSL and so on
+	- since references must be added to a dynastic root element whenever a dynasty expands,
+	  it should be easy to extract statistical information from dynastic root elements
+	- a separate statistic could be build within ES to count DSLs, whenever inheritance is not used
+
+
 
 Traded elements(1.4):
-	- traded elements can be specified following es keys or rank declaration and within a constructor
+	- traded elements can be specified following es keys or beyond RANK, IDF and MOD
+	  and within a constructor
 	- parameters must be separated using element separators
-	- for single TRE use with multiple COEs you can group parameters using | or by using TREs within the COEs
-		f.e. 		
+	- for single TRE use with multiple COEs you can group parameters using | or by
+	  using TREs within the COEs, f.e.:
+			
 			:Ellipse(Geometry){Circle | x(int) = 50, y(int){75}| ...}
+			?!loyal ?!callable
 			:>([0]) item = Circle <:
 			:>([1]) X = x ~ Y =y <:
 			:>... <:
 			...
+			?!fame
 			:
+			
+			<# comment section exercise
+				Ellipse has 3 modifiers, separated over the element structure,
+				they determine that the class can be seen anywhere within ES due to
+				?!fame, but won't answer unless from a higher ranked dynastic element,
+				since ?!loyal inhibits the full range of ?!callable
+			#>
+			
 	- parameters might be declared with a default value
-	- an element can hold a maximum amount of TRE, which is 1 + n * COE
-	- on instance operators +IDF and -IDF TRE may be used to specify
-	- instance options, f.e. +{Singleton}IDF, -{all}IDF
+	- an element can hold a maximum amount of TRE, which is 1 + n * COE, configurable via ES
+	- on instance operators +IDF and -IDF TRE may be used to specify instance options,
+	  f.e. +{Singleton}IDF, -{all}IDF
+
+
 
 Constructor elements(1.5):
 	- can be used to specify an element further
-	- every COE can be named using RANK>{..name = ""} ... <RANK 
-		or RANK>{..name{""}} ... <RANK
-	- an element can hold a maximum amount of COE, which is n
-	
+	- every COE can be named using RANK>{..name = "COE_NAME"} ... <RANK 
+		or RANK>{..name{"COE_NAME"}} ... <RANK
+	- an element can hold a maximum amount of COE, which is n, configurable via ES
+
+
+
 Dynastic Overrides(1.6):
-	- in case the identifiers are identical the dynastic code will be ignored
 	- all dynastic sources like functions can be overwritten
 	- f.e. ;new_func(*;old_func) ;
-	- to use code as blueprint, f.e. for abstract classes declare a non ancestor
-		with the modifier ?!idol and specify (**IDF) on the implementing element
-	- 
+	- to use code as blueprint, f.e. for abstract classes, declare a non ancestor
+	  with ?!idol and specify (**IDF) on the implementing element
+
+
 
 Call of IDFs(1.7):
+	- to call an IDF you can specify the RANK, but are not required to
+	- in case the identifiers are identical the dynastic code will be ignored and 
+	  the lower ranked element with the same IDF will be preferred, if they are
+	  equal an conflicting identifier error must be raised
+	- unsure whether the above behaviour should be configurable via ES, could as
+	  well be reversed, experimentally implemented an ?!ignore MOD, to solve the issue
+	- in an interpreter version, use #RANK_IDF or #IDF to signal the interpreter
+	  that all linked lines up to this line, and the line as well should be executed
+	  by ES
+	- in my experience, python tends to be slow when used in a console with its
+	  interpreter function under linux f.e., to wait for an execution run point
+	  maybe could fix this sluggishness in speed, but this is an unproven thought
+	- #^RANK_IDF or #^IDF signals async operations, es will need to halt execution
+	  until the asynchronous called IDF has finished execution and returned the
+	  execution finished value, whatever that may be
+	- for to be compiled source files it should be enough if the IDF including the
+	  rank is called properly, the whole file or project structure must be processed
+	  by parsers, linkers and whatelse via es, execution would start later via ES	  
+	- for a pep8 like recommendation: #RANK_IDF or #^RANK_IDF or #+RANK_IDF #-RANK_IDF
+	  adding of rank would be clearer to read, but would take longer to write
+	- f.e.: #!Program #!Program.Sender #^!Program;CreateNewsReport
 
-		when to be run by an interpreter based version in a console,
-	use #, to signal the interpreter that all linked lines up to this line,
-		and the line as well should be executed by ES, in my experience, python
-		tends to be slow when used in a console with its interpreter function under linux f.e.,
-		to wait for a execution run point maybe could fix this sluggishness in speed.	
-	
-	# ^ signals async operations, es will halt execution until called
-		IDF has finished process
-		
-	for to be compiled source files it is enough if the IDF including
-		the rank is called, it would certainly be worhty to become a
-		pep8 like recommendation: # RANKIDF or # ^ RANKIDF or # +RANKIDF # -RANKIDF
-	
-	f.e.s: # !Program # !Program.Sender #!Program;CreateNewsReport
 
-	
+
+
+
+
 Syntax(2):
 Syntax keys(2.1):
-	 0. RANK>  	<- 	opening constructor
+	 0. RANK>  			<- opening constructor
 	 
-	 1. <RANK  	<-  closing constructor
+	 1. <RANK  			<- closing constructor
 	 
-	 2. <-  	<-  line comment
+	 2. <-  			<- line comment
+			
+	 3. <# #>   			<- comment section
+			
+	 4. #  				<- run
+		
+	 5. #^				<- run async, following code will await continuation until
+						<- async called element has finished
+			
+	 6. <   			<- add to element (allowed within traded elements block)
+			
+	 7. >   			<- return value to calling element (allowed within LREOE)
+			
+	 8. <°   			<- instances created to this point, f.e. 
+						<- "<°" 				all instances
+						<- "<°IDENTIFIER"		one instance of IDENTIFIER
+						<- "<°{all}IDENTIFIER	all instances of IDENTIFIER
 	 
-	 3. <# #>   <- 	comment section
+	 9. +IDENTIFIER			<- new instance of IDENTIFIER
 	 
-	 4. #  		<-  run
-
-	 5. #^		<- 	run async (following code will await continuation until async has finished)
-	 
-	 6. <   	<-	add to element (allowed within traded elements block)
-	 
-	 7. >   	<-	return value to calling element (allowed within LREOE)
-	 
-	 8. <°   	<- 	instances created to this point, 
-							<- 	f.e. "<°" all instances,
-							"<°IDENTIFIER one instance of IDENTIFIER,
-							"<°{all}IDENTIFIER all instances of IDENTIFIER
-	 
-	 9. +IDENTIFIER   <- new instance of IDENTIFIER
-	 
-	10. -IDENTIFIER   <- delete instance of IDENTIFIER, a.e. -{all}IDENTIFIER
+	10. -IDENTIFIER		   	<- delete instance of IDENTIFIER, a.e. -{all}IDENTIFIER
 	
-	11. =!   	<- 	single if, else when following =?, usage: =!(DYE){TRE}. LREOE ?!MOD. 
+	11. =!   			<- single if, else when following =?, rank structure
+						<- mods can be specified, otherwise they implement the
+						<- mods of the surrounding code structure	
+						<- usage: =!. ?!MOD (DYE){TRE} LREOE ?!MOD . 
 
-	12. =?   	<- 	else if, usage: f.e. =?(Console){77 > x}. +print{x} ?!MOD. =!. +print{"higher"} ?!MOD.
+	12. =?   			<- else if, must be followed/closed by single if, rank structure
+						<- mods can be specified, otherwise they implement the
+						<- mods of the surrounding code structure
+						<- usage: 
+							=?. ?!MOD (DYE){TRE} LREOE ?!MOD .
+							=!. ?!MOD (DYE){TRE} LREOE ?!MOD .
+							f.e. =?. (Console){77 > x} +print{x} .
+							     =!. +print{"higher"} .
 	
-	13. []  	<- 	index, use before an instanciated IDF in any LREOE to access the internal element storage	
-				<- 	must return an error on lists if specified index is missing, but only a warning if it is
-					not a list, in case return value of IDENTIFIER,					
-					<- f.e. :Cascade 
-							;accessCascadeValues > [5]Cascade; <- will return internal "values" list
-							;accessCascade_0 > [5][0]Cascade; <- will return value at index 0
-																<- from internal "values" list
-							;accessCascadeName > [0]Cascade; <- will return internal name
+	13. []  			<- index, use before an instanciated IDF in any LREOE to access
+						<- the internal element storage, must return an error on lists
+						<- if specified index is missing, but only a warning if it is
+						<- not a list, in case return value of IDENTIFIER,					
+						<- f.e.
+						
+							:Cascade ?!callable ?!fame							
+								;accessCascadeValues > [5]Cascade; 
+									<- will return internal "values" list
+								;accessCascade_0 > [5][0]Cascade;
+									<- will return value at index 0, from internal "values" list
+								;accessCascadeName > [0]Cascade;
+									<- will return internal name
 							: 					
-					f.e. 
-						[70000]list_1 >>>> MissingIndexError, execution must hold or be terminated, halt
-						[70000]other_object >>>> MissingIndexError, since other_object is not of type list, 
-								return value of other_object and print a warning to console or stderr,
-								keep running
-				<- use within trade elements block to specify an interval or parameter position,
-					<- element indexing is disabled while within TRE
+						
+						<- f.e. 
+						
+							[70000]list_1 >>>> MissingIndexError 
+									<- execution must hold or be terminated, halt
+							[70000]other_object >>>> MissingIndexError
+									<- since other_object is not of type list, 
+									<- return value of other_object and print a
+									<- warning to console or stderr, keep running
+									
+						<- use within trade elements block to specify an interval or parameter position
+						<- element indexing is disabled while within TRE
 	
-	14. ()   	<-	dynastic element, only one introduction per dynastic element, use several if more than one is needed
+	14. ()   			<- dynastic element block, only one introduction per dynastic element,
+						<- use several DYE blocks if more than one is needed
 	
-	15. {}   	<-	trade elements, can hold n arguments and n structures
+	15. {}   			<- traded elements block, can hold n arguments and n structures,
+						<- maximum amount of n needs to be configurable via ES
 	
-	16. §  		<- 	loop elements, can hold n arguments and n structures
-					<- f.e. §(){=!{yes}}.  .	 					<- while loop
-					<- f.e. §{[4-7], x{5} + i} >>>> 9, 10, 11, 12	<- ranged for loop
-					<- f.e. §{[5], # +helloWorld # -helloWorld }	<- repeat n times loop
-					<- f.e. §{[^]} list_2}.  .						<- element for element in list_2
+	16. §  				<- loop elements, can hold n arguments and n structures, configurable via ES
+						<- f.e.
+							§(){=!{yes}}.  .			<- while loop
+							§{[4-7], x{5} + i} >>>> 9, 10, 11, 12	<- ranged for loop
+							§{5, # +helloWorld # -helloWorld }	<- repeat n times loop
+							§{^ list_2}.  .				<- element for element in list_2
 	
-	17. $  		<- 	pool elements, combine them to an array or a list, be it randomized
-				<-  or an enum, can hold n arguments and n structures
-				<-  f.e. $(Random){7,5,3,1,-1} >>>> 3, 5, -1, 7, 1	
-				<- 	f.e. $(Enum){"Dallas", "Dublin", "Eastwick") >>>> [1. Dallas, 2. Dublin, 3. Eastwick]
+	17. $  				<- pool elements, combine them to an array or a list, be it randomized
+						<- or an enum or an array, can hold n arguments and n structures, configurable
+						<- via ES
+						<- f.e.
+							$(Random){7,5,3,1,-1}
+								>>>> 3, 5, -1, 7, 1	
+							$(Enum){"Dallas", "Dublin", "Eastwick")
+								>>>> [1. Dallas, 2. Dublin, 3. Eastwick]
+							$(Array(object)) {TIMER_1, COUNTER_10, SOME_OBJECT, SOME_OBJECT_2}							
+								array holds objects TIMER_1, COUNTER_10, SOME_OBJECT, SOME_OBJECT_2
 
-	18. %		<- 	join compatible elements (f.e. lists with lists, values % values_2)
-				<-  from right to left
+	18. %				<- join compatible elements (f.e. lists with lists, values % values_2)
+						<- from right to left, es must raise errors on several conditions
+						<- f.e. incompatible array or list type, could not append target to source
 
-	19. ^{int, (numbers)}  		<- exponential operation (allowed within trade elements block)
+	19. ^{float, float}	<- exponential operation, allowed within trade elements block or right of an =
+						<- f.e. 
+							^{5, 22} 	>>>>	5,153,632 	<- 22 * 22 * 22 * 22 * 22 
+							^{2, 3}  	>>>>	9		<- 3 * 3
+							^{2.4,3} 	>>>>	13.96661	<- 3 * 2.4
+							^{-2, 9} 	>>>>	3		<- 2nd root of 9
+							^{0.5,9} 	>>>>    3		<- 2nd root of 9
+							^{-2,9.8}	>>>>	3,13050		<- 2nd root of 9.8
+							^{0.5,9.8}	>>>>	3,13050		<- 2nd root of 9.8
 	
-	20. ~ [space] 				<- element separators
+	20. ~ [space] 		<- element separators
 	
-	21. *  						<- perform inheritance (allowed within dynastic elements block)
-								<- will add inheritance source to dynasty
+	21. *  				<- perform inheritance (allowed within dynastic elements block)
+						<- will link inheriting element to dynasty
 								
-	22. +						<- birth operator, creates an instance
-		-						<- grave operator, deletes an instance
+	22. +				<- birth operator, creates an instance
+		-				<- grave operator, deletes an instance
 								
-	23. yes no  	  			<- decisions (allowed within traded elements block or right of an =)
+	23. yes no  	  	<- decisions, allowed within traded elements block or right of an =
 	
-	24. + - * / < >				<- operators (allowed within traded elements block or as part of an
-								<- expression starting after the es return key)
+	24. + - * / < >		<- operators, allowed within traded elements block or as part of an
+						<- expression starting after the es return key
 
-	25. .. . ; : ! µ % & ° = 	<- rank keys
+	25. ..				<- rank key
+		.				<- rank key
+		;				<- rank key
+		:				<- rank key
+		!				<- rank key
+		µ				<- rank key
+		%				<- rank key
+		&				<- rank key
+		°				<- rank key
+		= 				<- rank key
 		
-	26  ?!						<- modifier
+	26  ?!				<- modifier
     
-	27	& |						<- conditions (allowed within traded elements block)
+	27	& |				<- conditions, allowed within traded elements block
 	
-	28 	&*NUMBER 				<- line connection for explanations or hints within the document,	
-		NUMBER*&				<- i don't know yet, if hypertext links within a source code file exist
-								<- i need to scroll very often, line jump hints may help to reduce that
-								<- amount of time
+	28 	&*NUMBER 		<- line connection for explanations or hints within the document,	
+		NUMBER*&		<- i don't know yet, if hypertext links within a source code file exist,
+						<- these syntax keys can be ignored, because they would not serve a better
+						<- purpose, i need to scroll very often, despite using IDE features, line
+						<- jump hints may help to reduce that amount of time further, pure speculation						
+						<- when clicking trough, a higher line number must follow upon a lower line
+						<- number,
+						the lower line number must be placed before the higher line number, if
+						<- the line connection
+						<- f.e.
+							line
+							17		&1{"content"}	<- start line connection 1 on line 17
+							99		1&{"content4"}	<- end line connection 1 on line 99
+							351		&1{"content2"}	<- add to line connection 1 on line 351
+							422		&1{"content3"}	<- add to line connection 1 on line 422
+							<- the example builds a comment or explanation starting at line 17, followed
+							<- by line 351, followed by line 422 and ended by line 99
 								
-	28 	??						<- realm within ES where the highest rank within the file and 
-									the dynasty will be known to every constituent element
+	28 	??				<- realm within ES where the highest inner rank within the file and 
+						<- the dynasty will be known to every constituent element
 	
-	30	?						<- Library, &351
-								<- &350 introduce dynastic element to file &351
-								<- &351 let the compiler search the realms 
+	30	?				<- Library
 	
-	31 	@						<- TRE blocks can be inserted into the string
+	31 	@				<- TRE blocks can be inserted into the string
 
-	32  "						<- string encapsulator
+	32  "				<- string encapsulator
 	
-	33 	=						<- assign right to left, optional, values can also be passed via TRE
+	33 	=				<- assign right to left, optional, values can also be passed via TRE
 	
-	34 ,MOD						<- a moment, not yet sure what to do with it, MOD = moment description IDF
-								<- STORE DATA, idky
-	
+	34 ,MDI				<- a moment, not yet sure what to do with it, MDI = moment description IDF
+						<- STORE DATA, idky (i don't know yet)
 		
-					- some examples:
-					
-				!helloWorld(Console)(Calculator)				
-					<- dynasty helloWorld, rank program, reads from Console and Calculator
-					
-				?BasicCalculations								
-					<- realm of BasicCalculations
-					
-					.(Console){"Hello World"} print{.text}. 	
-						<#  the structure reads from Console which has a print
-							function, the string traded to the structure is
-							assigned to the internal text member of the structure,
-							print is then called and calls the structures 
-							text member to print it to the console
-						#>
-																
-					+newCalculator{Calculator{15, 22}}			
-						<- +ELEMENT constructor will be read and executed
-						
-					newCalculator;run		
-					
-				?!executable									
-					<- modifier tells ES that this program can be run
-					
-				!	
-					
-					
-				!Calculator	
-				?BasicCalculations								
-					<- realm within ES, !Calculator dynasty will be known within
-				??Console										
-					<- introduced to !Calculator, originating from ??ES?BUILTIN
-					
-				!> operand_left(int), operand_right(int) <! 	
-					<- program constructor 0, taking two integer parameters
-					
-					:Square(<*)									
-						<- class definition with inheritance instruction
-						
-						;get_area								
-							<- method definition without DYE and TRE blocks
-							
-							> operand_left * operand_right		
-								<- return multiplication result
-							
-							.get_diagonal						
-								<- structure definition within method rank
-								
-								> :;calculate_diagonal			
-									<- return class member method ;calculate_diagonal
-									
-							?!									
-								<- modifier empty, meaning higher rank reigns
-								
-							.									
-								<- end of structure .get_diagonal
-								
-						?!	
-						
-						;										
-							<- end of method ;get_area
-						
-						;calculate_diagonal(<*)
-							<- method definition with inheritance instruction
-							
-							> ^{2~operand_left} + ^{2,operand_right}
-								<- return addition of 2nd exponents of the operands
-								
-						?!loyal	
-						
-						;
-									
-					?!loyal
-						<- modifier loyal, element will only answer calls of higher ranked dynastic members
-					
-					:Square
-						<- end of class Square with optional ending identifier
+	<- some examples:
+		
+	!helloWorld(Console)(Calculator)				
+		<- dynasty helloWorld, rank program, reads from Console and Calculator
+		
+	?BasicCalculations								
+		<- realm of BasicCalculations
+		
+		.(Console){"Hello World"} ;print{.text}. 	
+			<#  the structure reads from Console which has a print
+				function, the string traded to the structure is
+				assigned to the internal text member of the structure,
+				unless specified otherwise, print is then called and
+				calls the structures text member to print it to the console
+			#>
+													
+		+newCalculator{Calculator{15, 22}}			
+			<- +ELEMENT constructor will be read and executed
+			
+		newCalculator;run		
+		
+	?!executable									
+		<- modifier tells ES that this program can be run
+		
+	!	
+		
+		
+	!Calculator	
+	?BasicCalculations								
+		<- realm within ES, !Calculator dynasty will be known within ??Console										
+		<- introduced to !Calculator, originating from ??ES?BUILTIN
+		
+	!> operand_left(int), operand_right(int) <! 	
+		<- program constructor 0, taking two integer parameters
+		
+		:Square(<*)									
+			<- class definition with inheritance instruction
+			
+			;get_area								
+				<- method definition without DYE and TRE blocks
 				
-					;run(+Console)
-						<- program level method, taking two arguments as parameters and instantiating Console
-						
-						# print{
-							@"d = {!:Square.get_diagonal}\n" +
-								<- string with TRE blocks concatenated over two lines
-								
-							@"a={!:Square;get_area}"
-								<- string with TRE blocks concatenated over two lines
-								
-						}
-						
-					?!callable
+				> operand_left * operand_right		
+					<- return multiplication result
+				
+				.get_diagonal						
+					<- structure definition within method rank
 					
-					;
+					> :;calculate_diagonal			
+						<- return class member method ;calculate_diagonal
+						
+				?!									
+					<- modifier empty, meaning higher rank reigns
+					
+				.									
+					<- end of structure .get_diagonal
+					
+			?!	
+			
+			;										
+				<- end of method ;get_area
+			
+			;calculate_diagonal(<*)
+				<- method definition with inheritance instruction
 				
-				?!callable
-				
-				!				
+				> ^{2~operand_left} + ^{2,operand_right}
+					<- return addition of 2nd exponents of the operands
+					
+			?!loyal	
+			
+			;
+						
+		?!loyal
+			<- modifier loyal, element will only answer calls of higher ranked dynastic members
+		
+		:Square
+			<- end of class Square with optional ending identifier
+	
+		;run(+Console)
+			<- program level method, taking two arguments as parameters and instantiating Console
+			
+			# print{
+				@"d = {!:Square.get_diagonal}\n" +
+					<- string with TRE blocks concatenated over two lines
+					
+				@"a={!:Square;get_area}"
+					<- string with TRE blocks concatenated over two lines
+					
+			}
+			
+		?!callable
+		
+		;
+	
+	?!callable
+	
+	!				
 
-ES es (3):
-	should contain a statistic function for every order/rank of elements, so that
-	the regular memory usage can be determined over time.
 
-ES(3.1):
-- ES;find_rank~ES;find_dynasty
 
-es(3.2):
-- rank request
 
-Storage Management Key(3.3):
+
+
+ES es technical details and specification(3):
+
+
+
+	3.0.1 compiler and runtime:
+		-> the first compiler and virtual runtime should be written in C and C++
+		   or by using and adapting existing compilers, linkers, parsers or
+		   virtual runtime environments etc., until the es compiler is able to
+		   compile itself in an ES environment
+	
+		-> currently there are all options on the table on how the ES ecosystem
+		   could operate:
+		   
+			Virtual Compiler &| Interpreter Solution
+				-> use a hardware abstraction layer and generate bytecode like
+				   f.e. C#, Java or Python
+			Inbetween Compiler &| Interpreter Solution
+				-> target existing OS hardware layers and operate by using them to
+				   instruct the cpu and alike
+			Classic Compiler (&| Interpreter?) Solution
+				-> develop a hardware layer that can operate independend of os via
+				   drivers or the like, like C or C++, this would make ES fast and
+				   also an option for embedded systems, but more complex and
+				   dependend on constant upgrades, this needs to be taken into account
+			Interpreter, API, Interface, Documentation, Mindmapping, Planning
+				-> as plugin or scripting feature within other software, 
+				-> without the use of an environment solely the syntax could be used
+				   to structure knowledge, data and other abstract language objects,
+				   this is showcased in the 'ElementSyntaxThoughtsAndIdeas.txt' file
+
+
+
+	3.0.1 licensing:
+		-> some sort of open source license, unsure on how to finance continous compiler updates,
+		   server infrastructure and so on, therefor some form of business license for businesses
+		   can not be excluded at the moment
+		-> an existing license model should be good enough, but i am not informed at the moment,
+		   what kind of license other programming languages use
+
+	3.0.2 development participation:
+		-> email me or message me over Github (don't know if Github has a message system,
+		   i would think so, but i am not aware of any) and we will talk,
+		   later, once there is a homepage and a proper project presentation, participation
+		   requests should be handled using some sort of contact formular or official project
+		   email address or via Github
+		-> if you like, your name will be included into the es development history with your
+		   questions, objections, ideas and so on, at least some sort of thought process and
+		   reasoning for or against suggestions could include your name or online avatar name,
+		   whatever, even if the suggestions are refused, i guess the reasoning could be
+		   interesting for others to read anyway
+		-> if no one ever participates, i will develop the project in my own terms, whenever
+		   i have the proper motivation and good enough technical knowledge and skills, right
+		   now i am learning C and C++ and am testing parts of ES keys in my other project,
+		   there i split commands in shards and analyze them; within this repository, there 
+		   is an editor, which i wrote to be able to visualize the syntax and to train string
+		   analysis using regex
+
+	3.0.3 ES Environment and es Compiler features:
+		-> ES should contain a statistic function for every order/rank of elements, so that
+		   the regular memory usage of a project can be determined over time
+
+
+
+ES Element Syntax environment specification(3.1):
+	-> many, many open questions 
+	-> memory management
+	-> bit and byte processing hardware-related or via
+	   OS, VM, HAL?	
+	-> OS integration, execution behaviour in general
+
+	-> ES;find_rank
+	-> ES;find_dynasty
+
+
+
+es element syntax compiler specification(3.2):
+	-> many, many open questions 
+	-> instruction and syntax processing
+	-> error definitions
+	-> behaviour
+	
+	-> es;rank_request
+
+
+
+Storage Management Key(3.3??? probably better outlined elsewhere than here):
 
 	,IDF(DYNASTY){DEST~NAME~FORMAT} FUNCTIONCALL,
 
@@ -485,7 +711,7 @@ Storage Management Key(3.3):
 		,saveValues(OS_UserTable){
 			"c:/programs/ES_Editor"
 			IDF..name
-			txt				|| automatisch wenn Format gibt, isFolder intern auf no setzen?
+			txt || automatisch wenn Format gibt, isFolder intern auf no setzen?
 			isFolder = no			
 			}
 			
@@ -501,6 +727,3 @@ Storage Management Key(3.3):
 			
 			> ..values			
 		,
-			
-	
-	
